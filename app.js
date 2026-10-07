@@ -1,68 +1,68 @@
 (() => {
   const serviceData = {
     cloud: {
-      label: "CLOUD & INFRASTRUCTURE",
-      title: "Cloud & Infrastructure Solutions",
+      label: "CLOUD COMPUTING",
+      title: "AWS Cloud Training",
       description:
         "Build a scalable, secure, and future-ready infrastructure that supports where your business is going.",
       items: [
-        "AWS & Azure migration",
-        "Network design & implementation",
-        "Data center modernization",
-        "Hybrid cloud solutions",
+        "AWS Solutions Architect Associate",
+        "Cloud infrastructure fundamentals",
+        "Scalable cloud architecture",
+        "Hands-on learning and practice",
       ],
-      action: "Talk about cloud services",
-      page: "cloud.html",
-      art: "Cloud architecture",
-      logos: ["AWS", "Azure", "Google Cloud", "Cisco"],
+      action: "Explore cloud courses",
+      page: "courses.html",
+      art: "Learn cloud computing",
+      logos: ["AWS", "CLOUD", "ARCHITECTURE", "LABS"],
     },
     cybersecurity: {
       label: "CYBERSECURITY",
-      title: "Cybersecurity Solutions",
+      title: "Cybersecurity Courses",
       description:
         "Reduce risk with practical security assessment, implementation, and monitoring shaped around your environment.",
       items: [
-        "Security audits & VAPT",
-        "Endpoint and network security",
-        "ISO 27001 & SOC 2 readiness",
-        "Incident response planning",
+        "Certified Ethical Hacker (CEH)",
+        "Penetration testing",
+        "Linux security",
+        "Firewall and network security",
       ],
-      action: "Request a security review",
-      page: "cybersecurity.html",
-      art: "Secure your business",
-      logos: ["VAPT", "ISO 27001", "SOC 2", "Endpoint"],
+      action: "Explore cybersecurity courses",
+      page: "courses.html",
+      art: "Practice cybersecurity",
+      logos: ["CEH", "PENTEST", "LINUX", "FIREWALL"],
     },
     automation: {
-      label: "AUTOMATION & DEVELOPMENT",
-      title: "Automation & Development",
+      label: "AI & MACHINE LEARNING",
+      title: "AI & Agentic AI Training",
       description:
         "Make delivery more reliable and free your team from repetitive work with thoughtfully designed automation.",
       items: [
-        "DevOps implementation",
-        "CI/CD pipeline setup",
-        "AI and ML integration",
-        "Custom software & APIs",
+        "AI and machine learning foundations",
+        "LangChain and LangGraph",
+        "Hugging Face workflows",
+        "Build practical AI agents",
       ],
-      action: "Discuss your project",
-      page: "automation.html",
-      art: "Automate with confidence",
-      logos: ["DevOps", "Terraform", "AI / ML", "CI / CD"],
+      action: "Explore AI courses",
+      page: "courses.html",
+      art: "Build with AI",
+      logos: ["AI / ML", "LANGCHAIN", "LANGGRAPH", "HUGGING FACE"],
     },
     advisory: {
-      label: "ADVISORY & SUPPORT",
-      title: "IT Advisory & Support",
+      label: "NETWORKING & DATA CENTER",
+      title: "Networking & Data Center Courses",
       description:
         "Get independent guidance and responsive support to keep technology aligned with your business priorities.",
       items: [
-        "IT strategy consulting",
-        "Managed IT services",
-        "Monitoring & support",
-        "Technology roadmaps",
+        "CCNA and CCNP paths",
+        "Enterprise networking",
+        "Network security",
+        "Data center technologies",
       ],
-      action: "Plan your next step",
-      page: "advisory.html",
-      art: "Expertise when you need it",
-      logos: ["Strategy", "Support", "Monitoring", "Roadmaps"],
+      action: "Explore networking courses",
+      page: "courses.html",
+      art: "Build network expertise",
+      logos: ["CCNA", "CCNP", "SECURITY", "DATA CENTER"],
     },
   };
 
@@ -187,23 +187,27 @@
   );
 
   const form = document.querySelector("#contact-form");
-  form.addEventListener("submit", (event) => {
+  form.addEventListener("submit", async (event) => {
     event.preventDefault();
     if (!form.reportValidity()) return;
-    const data = new FormData(form);
-    const subject = `Website enquiry: ${data.get("challenge")}`;
-    const body = [
-      `Name: ${data.get("name")}`,
-      `Email: ${data.get("email")}`,
-      `Company: ${data.get("company") || "Not provided"}`,
-      `Phone: ${data.get("phone") || "Not provided"}`,
-      `Area of interest: ${data.get("challenge")}`,
-      "",
-      `Message: ${data.get("message") || "Not provided"}`,
-    ].join("\n");
-    const href = `mailto:taj@aroushtech.in?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    document.querySelector(".form-status").textContent =
-      "Your email app is opening with this enquiry. Please send the message there to complete submission.";
-    window.location.href = href;
+    const values = Object.fromEntries(new FormData(form).entries());
+    const status = form.querySelector(".form-status");
+    const submit = form.querySelector('[type="submit"]');
+    submit.disabled = true;
+    status.textContent = "Sending your enquiry…";
+    try {
+      const response = await fetch("/api/enquiries", {
+        method: "POST", headers: { "content-type": "application/json" },
+        body: JSON.stringify({ ...values, interest: values.challenge || "Course enquiry" }),
+      });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || "Unable to send your enquiry.");
+      status.textContent = result.message;
+      form.reset();
+    } catch (error) {
+      status.textContent = `${error.message} Please call +91 88676 92074 or email taj@aroushtech.in.`;
+    } finally {
+      submit.disabled = false;
+    }
   });
 })();

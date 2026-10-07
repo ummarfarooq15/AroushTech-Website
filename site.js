@@ -21,6 +21,14 @@ if (menuButton && navigation) {
   });
 }
 
+document.querySelectorAll(".dropdown-trigger").forEach((button) => {
+  button.addEventListener("click", () => {
+    const wrapper = button.closest(".nav-dropdown");
+    const open = wrapper.classList.toggle("open");
+    button.setAttribute("aria-expanded", String(open));
+  });
+});
+
 const themeButton = document.querySelector(".theme-toggle");
 if (themeButton) {
   const setTheme = (theme) => {
@@ -54,44 +62,69 @@ if (themeButton) {
   });
 }
 
-// Prefill the service selector when a visitor arrives from a service page.
-const enquiryType = new URLSearchParams(window.location.search).get("interest");
+const query = new URLSearchParams(window.location.search);
+const enquiryType = query.get("interest");
+const requestedCourse = query.get("course");
 if (enquiryType) {
   const challengeSelect = document.querySelector('[name="challenge"]');
-  if (challengeSelect) challengeSelect.value = enquiryType;
+  if (challengeSelect) {
+    const option = [...challengeSelect.options].find((item) => item.value === enquiryType || item.text === enquiryType);
+    if (option) challengeSelect.value = option.value;
+  }
+}
+if (requestedCourse) {
+  const courseField = document.querySelector('[name="course"]');
+  if (courseField) courseField.value = requestedCourse;
+  const messageField = document.querySelector('[name="message"]');
+  if (messageField && !messageField.value) messageField.value = `I would like to know more about ${requestedCourse}.`;
 }
 
-document.querySelectorAll("[data-enquiry-form]").forEach((form) => {
-  form.addEventListener("submit", (event) => {
+document.querySelectorAll("[data-enquiry-form], #contact-form").forEach((form) => {
+  form.addEventListener("submit", async (event) => {
     event.preventDefault();
     if (!form.reportValidity()) return;
-
-    const values = new FormData(form);
-    const subject = `Website enquiry: ${values.get("challenge")}`;
-    const body = [
-      `Name: ${values.get("name")}`,
-      `Email: ${values.get("email")}`,
-      `Company: ${values.get("company") || "Not provided"}`,
-      `Phone: ${values.get("phone") || "Not provided"}`,
-      `Area of interest: ${values.get("challenge")}`,
-      "",
-      `Message: ${values.get("message") || "Not provided"}`,
-    ].join("\n");
-
+    const values = Object.fromEntries(new FormData(form).entries());
     const status = form.querySelector(".form-status");
-    status.textContent =
-      "Your email app is opening with this request. Send the message there to complete submission.";
-    window.location.href = `mailto:taj@aroushtech.in?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    const submit = form.querySelector('[type="submit"]');
+    if (submit) submit.disabled = true;
+    if (status) status.textContent = "Sending your enquiry…";
+    try {
+      const response = await fetch("/api/enquiries", {
+        method: "POST", headers: { "content-type": "application/json" },
+        body: JSON.stringify({ ...values, interest: values.interest || values.challenge || "Course enquiry" }),
+      });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || "Unable to send your enquiry.");
+      if (status) status.textContent = result.message;
+      form.reset();
+    } catch (error) {
+      if (status) status.textContent = `${error.message} Please call +91 88676 92074 or email taj@aroushtech.in.`;
+    } finally {
+      if (submit) submit.disabled = false;
+    }
   });
 });
 
 document.querySelectorAll("[data-newsletter-form]").forEach((form) => {
-  form.addEventListener("submit", (event) => {
+  form.addEventListener("submit", async (event) => {
     event.preventDefault();
     if (!form.reportValidity()) return;
-    const email = new FormData(form).get("email");
-    form.querySelector(".form-status").textContent =
-      "Your email app is opening. Send the message there to complete your subscription request.";
-    window.location.href = `mailto:taj@aroushtech.in?subject=${encodeURIComponent("Newsletter subscription request")}&body=${encodeURIComponent(`Please add ${email} to the Aroush updates list.`)}`;
+    const status = form.querySelector(".form-status");
+    const submit = form.querySelector('[type="submit"]');
+    if (submit) submit.disabled = true;
+    try {
+      const response = await fetch("/api/newsletter", {
+        method: "POST", headers: { "content-type": "application/json" },
+        body: JSON.stringify({ email: new FormData(form).get("email") }),
+      });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || "Unable to subscribe.");
+      if (status) status.textContent = result.message;
+      form.reset();
+    } catch (error) {
+      if (status) status.textContent = `${error.message} Please email taj@aroushtech.in.`;
+    } finally {
+      if (submit) submit.disabled = false;
+    }
   });
 });

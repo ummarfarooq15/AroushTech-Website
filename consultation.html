@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <meta
       name="description"
-      content="Request a free 30-minute IT consultation with Aroush Solutions to discuss your technology challenges."
+      content="Request a free 30-minute IT consultation with AroushTech to discuss your technology challenges."
     />
-    <title>Book a Free Consultation | Aroush Solutions</title>
+    <title>Book a Free Consultation | AroushTech</title>
     <link rel="stylesheet" href="styles.css" />
     <script src="site.js" defer></script>
   </head>
@@ -17,7 +17,7 @@
       <div class="nav-wrap container">
         <a class="brand" href="index.html"
           ><span class="brand-mark">A</span
-          ><span class="brand-name">Aroush<span>Solutions</span></span></a
+          ><span class="brand-name">Aroush<span>Tech</span></span></a
         ><button
           class="menu-toggle"
           aria-label="Open navigation"
@@ -25,20 +25,11 @@
         >
           <i></i><i></i><i></i>
         </button>
-        <nav class="main-nav">
-          <a class="nav-link" href="index.html">Home</a
-          ><a class="nav-link" href="services.html">Services</a
-          ><a class="nav-link" href="training.html">Corporate Training</a
-          ><a class="nav-link" href="case-studies.html">Case Studies</a
-          ><a class="nav-link" href="about.html">About</a
-          ><a class="nav-link" href="insights.html">Insights</a
-          ><a class="nav-link" href="courses.html">Courses</a
-          ><a class="nav-link" href="gallery.html">Gallery</a>
-          <div class="nav-mobile-actions">
-            <a class="button button-primary" href="consultation.html"
-              >Book a Free Consultation →</a
-            >
-          </div>
+        <nav class="main-nav" aria-label="Main navigation">
+          <a class="nav-link" href="index.html">Home</a>
+          <div class="nav-dropdown"><button class="nav-link dropdown-trigger" aria-expanded="false">Services <span>⌄</span></button><div class="dropdown-menu"><a href="services.html">All services</a><a href="cloud.html">Cloud & infrastructure</a><a href="cybersecurity.html">Cybersecurity</a><a href="automation.html">Automation & development</a><a href="advisory.html">IT consultation</a></div></div>
+          <a class="nav-link" href="training.html">Corporate Training</a><a class="nav-link" href="courses.html">Courses</a><a class="nav-link" href="gallery.html">Gallery</a><a class="nav-link" href="about.html">About</a><a class="nav-link" href="insights.html">Insights</a><a class="nav-link" href="contact.html">Contact</a>
+          <div class="nav-mobile-actions"><a class="button button-primary" href="contact.html?interest=Free%20Demo">Book a Free Demo <span>↗</span></a></div>
         </nav>
         <div class="nav-actions">
           <button
@@ -46,8 +37,8 @@
             aria-label="Switch to light mode"
           >
             <span class="theme-icon">☾</span></button
-          ><a class="button button-primary nav-cta" href="consultation.html"
-            >Book a Free Consultation <span>↗</span></a
+          ><a class="button button-primary nav-cta" href="contact.html?interest=Free%20Demo"
+            >Book a Free Demo <span>↗</span></a
           >
         </div>
       </div>
@@ -87,6 +78,7 @@
             </p>
           </div>
           <form class="contact-form" data-enquiry-form>
+            <input type="hidden" name="course" value="" />
             <div class="form-heading">
               <h3>Request a consultation</h3>
               <p>Required fields are marked with *.</p>
@@ -129,6 +121,9 @@
                 <option>Automation & Development</option>
                 <option>IT Advisory & Support</option>
                 <option>Corporate Training</option>
+                <option>Free Demo</option>
+                <option>Course enquiry</option>
+                <option>Course guidance</option>
                 <option>Other</option>
               </select></label
             ><label
@@ -138,11 +133,10 @@
                 placeholder="Briefly describe your situation..."
               ></textarea></label
             ><button class="button button-primary form-submit" type="submit">
-              Prepare Consultation Request <span>→</span>
+              Send Consultation Request <span>→</span>
             </button>
             <p class="form-note">
-              Your email app will open with a prepared request. Send it to
-              complete the enquiry.
+              Your request is saved so our team can follow up with you.
             </p>
             <div class="form-status" role="status" aria-live="polite"></div>
           </form>
@@ -155,7 +149,7 @@
           <div class="footer-about">
             <a class="brand brand-footer" href="index.html"
               ><span class="brand-mark">A</span
-              ><span class="brand-name">Aroush<span>Solutions</span></span></a
+              ><span class="brand-name">Aroush<span>Tech</span></span></a
             >
             <p>
               Technology consulting and implementation for growing businesses.

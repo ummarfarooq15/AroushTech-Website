@@ -1,0 +1,13 @@
+{
+  "name": "aroushtech-website",
+  "version": "1.0.0",
+  "private": true,
+  "description": "AroushTech training website with SQLite-backed enquiry and newsletter forms.",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=22.5.0"
+  }
+}
